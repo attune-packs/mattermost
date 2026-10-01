@@ -1,0 +1,26 @@
+version: "1.0"
+cancellation_policy: cancel_running
+tasks:
+  - name: create_root
+    action: mattermost.post_message
+    permission_set_refs: [standard]
+    input:
+      credential_key: "{{ parameters.credential_key }}"
+      channel_id: "{{ parameters.channel_id }}"
+      message: "{{ parameters.message }}"
+    next:
+      - when: "{{ succeeded() }}"
+        do: [create_replies]
+  - name: create_replies
+    action: mattermost.post_message
+    permission_set_refs: [standard]
+    with_items: "{{ parameters.replies }}"
+    concurrency: 1
+    input:
+      credential_key: "{{ parameters.credential_key }}"
+      channel_id: "{{ parameters.channel_id }}"
+      root_id: "{{ task.create_root.result.post.id }}"
+      message: "{{ item }}"
+output_map:
+  root_post_id: "{{ task.create_root.result.post.id }}"
+  reply_count: "{{ length(parameters.replies) }}"

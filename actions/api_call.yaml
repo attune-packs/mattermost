@@ -1,0 +1,21 @@
+ref: mattermost.api_call
+label: "Call Mattermost API"
+description: "Call one bounded path below the configured Mattermost API v4 origin"
+enabled: true
+runner_type: python
+runtime_version: ">=3.10"
+entry_point: mattermost_action.py
+parameter_delivery: stdin
+parameter_format: json
+output_format: json
+default_execution_permission_set_refs: [standard]
+parameters:
+  credential_key: {type: string, default: "pack.mattermost.credentials", key_ref: true, pattern: "^pack\\.mattermost\\.[a-z0-9][a-z0-9_-]{0,62}$"}
+  method: {type: string, default: GET, enum: [GET, POST, PUT, DELETE]}
+  endpoint: {type: string, required: true, minLength: 1, description: "Path relative to /api/v4, beginning with /"}
+  query: {type: object, default: {}}
+  body: {type: object, description: "Optional JSON object"}
+output:
+  operation: {type: string, required: true}
+  result: {type: object, required: true}
+tags: [mattermost, api]

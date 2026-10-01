@@ -1,0 +1,22 @@
+ref: mattermost.post_created
+label: "Mattermost Post Created"
+description: "Emitted for matching live channel posts observed over the Mattermost WebSocket"
+enabled: true
+parameters:
+  credential_key: {type: string, default: "pack.mattermost.credentials", key_ref: true, pattern: "^pack\\.mattermost\\.[a-z0-9][a-z0-9_-]{0,62}$"}
+  channel_id: {type: string, required: true, pattern: "^[a-z0-9]{26}$", description: "Exact channel to watch"}
+  user_id: {type: string, pattern: "^[a-z0-9]{26}$", description: "Optional exact author filter"}
+  allow_self_posts: {type: boolean, default: false, description: "Allow messages posted by the credential owner"}
+  allow_system_posts: {type: boolean, default: false, description: "Allow non-empty Mattermost system post types"}
+output:
+  post_id: {type: string, required: true}
+  channel_id: {type: string, required: true}
+  channel_name: {type: string, required: true}
+  team_id: {type: string, required: true}
+  user_id: {type: string, required: true}
+  sender_name: {type: string, required: true}
+  root_id: {type: string, required: true}
+  message: {type: string, required: true}
+  post_type: {type: string, required: true}
+  create_at: {type: integer, required: true}
+tags: [mattermost, posts, websocket]

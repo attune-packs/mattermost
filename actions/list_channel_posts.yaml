@@ -1,0 +1,21 @@
+ref: mattermost.list_channel_posts
+label: "List Mattermost Channel Posts"
+description: "List channel posts using bounded pagination"
+enabled: true
+runner_type: python
+runtime_version: ">=3.10"
+entry_point: mattermost_action.py
+parameter_delivery: stdin
+parameter_format: json
+output_format: json
+default_execution_permission_set_refs: [standard]
+parameters:
+  credential_key: {type: string, default: "pack.mattermost.credentials", key_ref: true, pattern: "^pack\\.mattermost\\.[a-z0-9][a-z0-9_-]{0,62}$"}
+  channel_id: {type: string, required: true, pattern: "^[a-z0-9]{26}$"}
+  page: {type: integer, default: 0, minimum: 0, maximum: 1000000}
+  per_page: {type: integer, default: 60, minimum: 1, maximum: 100}
+  max_pages: {type: integer, default: 1, minimum: 1, maximum: 10}
+output:
+  operation: {type: string, required: true}
+  result: {type: object, required: true}
+tags: [mattermost, posts, list]

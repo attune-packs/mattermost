@@ -1,0 +1,21 @@
+ref: mattermost.upload_file
+label: "Upload Mattermost File"
+description: "Upload text content or one artifact file to a Mattermost channel"
+enabled: true
+runner_type: python
+runtime_version: ">=3.10"
+entry_point: mattermost_action.py
+parameter_delivery: stdin
+parameter_format: json
+output_format: json
+default_execution_permission_set_refs: [standard]
+parameters:
+  credential_key: {type: string, default: "pack.mattermost.credentials", key_ref: true, pattern: "^pack\\.mattermost\\.[a-z0-9][a-z0-9_-]{0,62}$"}
+  channel_id: {type: string, required: true, pattern: "^[a-z0-9]{26}$"}
+  filename: {type: string, minLength: 1, maxLength: 255, description: "Required with content; optional override with file_path"}
+  content: {type: string, description: "UTF-8 content; mutually exclusive with file_path"}
+  file_path: {type: string, description: "File below ATTUNE_ARTIFACTS_DIR; mutually exclusive with content"}
+output:
+  operation: {type: string, required: true}
+  result: {type: object, required: true}
+tags: [mattermost, files, upload]
